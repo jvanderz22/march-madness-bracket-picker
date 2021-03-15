@@ -9,6 +9,8 @@ class KenpomScraper:
         self.email = os.getenv('KENPOM_EMAIL')
         self.password = os.getenv("KENPOM_PASSWORD")
         self.home_address = 'http://kenpom.com'
+        self.tournament_name = "Men's 2021 NCAA Tournament"
+        self.year = 2021
 
     @contextmanager
     def browser(self):
@@ -31,6 +33,11 @@ class KenpomScraper:
 
         file_path = (file_dir / file_name).resolve()
         data_file = open(file_path, 'w')
-        json.dump(data, data_file)
+        file_data = {
+            "tournament_name": self.tournament_name,
+            "year": self.year,
+            "data": data
+        }
+        json.dump(file_data, data_file)
         data_file.close()
 
