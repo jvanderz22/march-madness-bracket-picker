@@ -1,0 +1,346 @@
+{
+  "name": "Men's 2021 NCAA Tournament",
+  "year": 2021,
+  "bracket": [
+    {
+      "pos": "1",
+      "seed": "1",
+      "team": "Gonzaga"
+    },
+    {
+      "pos": "2a",
+      "seed":"16",
+      "team": "Norfolk St."
+    },
+    {
+      "pos": "2b",
+      "seed":"16",
+      "team": "Appalachian St."
+    },
+    {
+      "pos": "3",
+      "seed": "8",
+      "team": "Oklahoma"
+    },
+    {
+      "pos": "4",
+      "seed": "9",
+      "team": "Missouri"
+    },
+    {
+      "pos": "5",
+      "seed": "5",
+      "team": "Creighton"
+    },
+    {
+      "pos": "6",
+      "seed": "12",
+      "team": "UC Santa Barbara"
+    },
+    {
+      "pos": "7",
+      "seed": "4",
+      "team": "Virginia"
+    },
+    {
+      "pos": "8",
+      "seed": "13",
+      "team": "Ohio"
+    },
+    {
+      "pos": "9",
+      "seed":"6",
+      "team": "USC"
+    },
+    {
+      "pos": "10a",
+      "seed": "11",
+      "team": "Wichita St."
+    },
+    {
+      "pos": "10b",
+      "seed": "11",
+      "team": "Drake"
+    },
+    {
+      "pos": "11",
+      "seed": "3",
+      "team": "Kansas"
+    },
+    {
+      "pos": "12",
+      "seed": "14",
+      "team": "Eastern Washington"
+    },
+    {
+      "pos": "13",
+      "seed": "7",
+      "team": "Oregon"
+    },
+    {
+      "pos": "14",
+      "seed": "10",
+      "team": "VCU"
+    },
+    {
+      "pos": "15",
+      "seed": "2",
+      "team": "Iowa"
+    },
+    {
+      "pos": "16",
+      "seed": "15",
+      "team": "Grand Canyon"
+    },
+    {
+      "pos": "17",
+      "seed": "1",
+      "team": "Michigan"
+    },
+    {
+      "pos": "18a",
+      "seed": "16",
+      "team": "Mount St. Mary's"
+    },
+    {
+      "pos": "18b",
+      "seed": "16",
+      "team": "Texas Southern"
+    },
+    {
+      "pos": "19",
+      "seed": "8",
+      "team": "LSU"
+    },
+    {
+      "pos": "20",
+      "seed": "9",
+      "team": "St. Bonaventure"
+    },
+    {
+      "pos": "21",
+      "seed": "5",
+      "team": "Colorado"
+    },
+    {
+      "pos": "22",
+      "seed": "12",
+      "team": "Georgetown"
+    },
+    {
+      "pos": "23",
+      "seed": "4",
+      "team": "Florida St."
+    },
+    {
+      "pos": "24",
+      "seed": "13",
+      "team": "UNC Greensboro"
+    },
+    {
+      "pos": "25",
+      "seed": "6",
+      "team": "BYU"
+    },
+    {
+      "pos": "26a",
+      "seed": "11",
+      "team": "Michigan St."
+    },
+    {
+      "pos": "26b",
+      "seed": "11",
+      "team": "UCLA"
+    },
+    {
+      "pos": "27",
+      "seed": "3",
+      "team": "Texas"
+    },
+    {
+      "pos": "28",
+      "seed": "14",
+      "team": "Abilene Christian"
+    },
+    {
+      "pos": "29",
+      "seed": "7",
+      "team": "Connecticut"
+    },
+    {
+      "pos": "30",
+      "seed": "10",
+      "team": "Maryland"
+    },
+    {
+      "pos": "31",
+      "seed": "2",
+      "team": "Alabama"
+    },
+    {
+      "pos": "32",
+      "seed": "15",
+      "team": "Iona"
+    },
+    {
+      "pos": "33",
+      "seed": "1",
+      "team": "Baylor"
+    },
+    {
+      "pos": "34",
+      "seed": "16",
+      "team": "Hartford"
+    },
+    {
+      "pos": "35",
+      "seed": "8",
+      "team": "North Carolina"
+    },
+    {
+      "pos": "36",
+      "seed": "9",
+      "team": "Wisconsin"
+    },
+    {
+      "pos": "37",
+      "seed": "5",
+      "team": "Villanova"
+    },
+    {
+      "pos": "38",
+      "seed": "12",
+      "team": "Winthrop"
+    },
+    {
+      "pos": "39",
+      "seed": "4",
+      "team": "Purdue"
+    },
+    {
+      "pos": "40",
+      "seed": "13",
+      "team": "North Texas"
+    },
+    {
+      "pos": "41",
+      "seed": "6",
+      "team": "Texas Tech"
+    },
+    {
+      "pos": "42",
+      "seed": "11",
+      "team": "Utah St."
+    },
+    {
+      "pos": "43",
+      "seed": "3",
+      "team": "Arkansas"
+    },
+    {
+      "pos": "44",
+      "seed": "14",
+      "team": "Colgate"
+    },
+    {
+      "pos": "45",
+      "seed": "7",
+      "team": "Florida"
+    },
+    {
+      "pos": "46",
+      "seed": "10",
+      "team": "Virginia Tech"
+    },
+    {
+      "pos": "47",
+      "seed": "2",
+      "team": "Ohio St."
+    },
+    {
+      "pos": "48",
+      "seed": "15",
+      "team": "Oral Roberts"
+    },
+    {
+      "pos": "49",
+      "seed": "1",
+      "team": "Illinois"
+    },
+    {
+      "pos": "50",
+      "seed": "16",
+      "team": "Drexel"
+    },
+    {
+      "pos": "51",
+      "seed": "8",
+      "team": "Loyola Chicago"
+    },
+    {
+      "pos": "52",
+      "seed": "9",
+      "team": "Georgia Tech"
+    },
+    {
+      "pos": "53",
+      "seed": "5",
+      "team": "Tennessee"
+    },
+    {
+      "pos": "54",
+      "seed": "12",
+      "team": "Oregon St."
+    },
+    {
+      "pos": "55",
+      "seed": "4",
+      "team": "Oklahoma St."
+    },
+    {
+      "pos": "56",
+      "seed": "13",
+      "team": "Liberty"
+    },
+    {
+      "pos": "57",
+      "seed": "6",
+      "team": "San Diego St."
+    },
+    {
+      "pos": "58",
+      "seed": "11",
+      "team": "Syracuse"
+    },
+    {
+      "pos": "59",
+      "seed": "3",
+      "team": "West Virginia"
+    },
+    {
+      "pos": "60",
+      "seed": "14",
+      "team": "Morehead St."
+    },
+    {
+      "pos": "61",
+      "seed": "7",
+      "team": "Clemson"
+    },
+    {
+      "pos": "62",
+      "seed": "10",
+      "team": "Rutgers"
+    },
+    {
+      "pos": "63",
+      "seed": "2",
+      "team": "Houston"
+    },
+    {
+      "pos": "64",
+      "seed": "15",
+      "team": "Cleveland St."
+    }
+  ]
+}
