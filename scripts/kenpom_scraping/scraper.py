@@ -8,6 +8,7 @@ class KenpomScraper:
     def __init__(self):
         self.email = os.getenv('KENPOM_EMAIL')
         self.password = os.getenv("KENPOM_PASSWORD")
+        self.home_address = 'http://kenpom.com'
 
     @contextmanager
     def browser(self):
@@ -19,7 +20,7 @@ class KenpomScraper:
 
 
     def sign_in(self, browser):
-        browser.get('http://kenpom.com')
+        browser.get(self.home_address)
         browser.find_element('name', 'email').send_keys(self.email)
         browser.find_element('name', 'password').send_keys(self.password)
         browser.find_element('name', 'submit').click()
