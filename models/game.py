@@ -1,6 +1,5 @@
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
-
 from sqlalchemy.orm import relationship
 
 from .base import Base

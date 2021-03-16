@@ -1,14 +1,10 @@
 from pathlib import Path
 import json
-import math
-import re
 
 from models import Game, Team, Tournament
 from db.session import session_scope
 
-TOTAL_ROUNDS = 7
-
-REGION_COUNTS = {1: "East", 2: "Midwest", 3: "South", 4: "West"}
+from scripts.utils import get_pos_round, get_pos_game_number, get_region, TOTAL_ROUNDS
 
 
 def create_teams(session, bracket_info):
@@ -22,12 +18,11 @@ def create_teams(session, bracket_info):
 
 def add_team_to_tournament(session, team_info):
     pos = team_info["pos"]
-    round = 1 if pos.find("a") > -1 or pos.find("b") > -1 else 2
+    round = get_pos_round(pos)
+    game_number = get_pos_game_number(pos)
     if round == 1:
-        game_number = re.sub("[^\d\.]", "", pos)
         game_position = 1 if pos.find("a") > -1 else 2
     else:
-        game_number = math.ceil(int(pos) / 2)
         game_position = 1 if int(pos) % 2 == 1 else 2
 
     game = (
@@ -42,14 +37,6 @@ def add_team_to_tournament(session, team_info):
         game.team1_id = team.id
     if game_position == 2:
         game.team2_id = team.id
-
-
-def get_region(round_number, game_number):
-    if round_number >= 6:
-        return "Final Four"
-    games_in_round = 2 ** (TOTAL_ROUNDS - round_number)
-    region_number = math.ceil((game_number / games_in_round) * 4)
-    return REGION_COUNTS[region_number]
 
 
 def create_games(session, tournament, bracket_info):
@@ -67,7 +54,7 @@ def create_games(session, tournament, bracket_info):
                 .first()
             )
             if game is None:
-                region = get_region(round_number, game_number)
+                region = get_region(round_number, game_number, TOTAL_ROUNDS)
                 game = Game(
                     round_number=round_number,
                     game_number=game_number,
