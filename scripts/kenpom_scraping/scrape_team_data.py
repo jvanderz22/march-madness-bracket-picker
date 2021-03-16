@@ -3,17 +3,18 @@ from pathlib import Path
 import json
 
 from scraper import KenpomScraper
+
 base_path = Path(__file__).parent.parent.parent
-bracket_file_dir = base_path / 'data/tournament_data'
-print("bracket_file_dir", bracket_file_dir)
+tournament_file_dir = base_path / "data/tournament_data"
+
 
 class TeamDataScraper(KenpomScraper):
     def __init__(self):
         super().__init__()
-        bracket_file = 'ncaa_mens_2021_bracket.json'
-        bracket_file_data = open(bracket_file_dir / bracket_file, 'r')
-        bracket_data = json.load(bracket_file_data)
-        self.teams = [team_data['team'] for team_data in bracket_data['bracket']]
+        tournament_file = "ncaa_mens_2021_bracket.json"
+        tournament_file_data = open(tournament_file_dir / tournament_file, "r")
+        tournament_data = json.load(tournament_file_data)
+        self.teams = [team_data["team"] for team_data in tournament_data["bracket"]]
 
     def scrape(self):
         with self.browser() as browser:
@@ -41,27 +42,27 @@ class TeamDataScraper(KenpomScraper):
         self.navigate_home(browser)
         navigated_to_team = self.navigate_to_team(browser, team)
         if navigated_to_team is False:
-            print(f'Could not get data for team {team}')
+            print(f"Could not get data for team {team}")
             return
         page_data = browser.page_source
         return self.team_data(page_data)
 
     def data_value(self, data_string, element_label, td_num):
         element_pos = data_string.index(element_label)
-        trimmed_string = data_string[element_pos:element_pos+600]
+        trimmed_string = data_string[element_pos : element_pos + 600]
         average_data_str = trimmed_string.split("<td")[td_num]
-        matched_data = re.search('((\+*)(-*)(\d*)\.(\d+))', average_data_str)
+        matched_data = re.search("((\+*)(-*)(\d*)\.(\d+))", average_data_str)
         if matched_data is None:
-            print(f'No Data found for {element_label}')
+            print(f"No Data found for {element_label}")
             return None
         return matched_data[0]
 
     def team_data(self, data_string):
         return {
             "off_eff": self.match_value(data_string, "RankAdjOE"),
-            "off_eff_rank": self.match_rank(data_string, 'RankAdjOE'),
+            "off_eff_rank": self.match_rank(data_string, "RankAdjOE"),
             "def_eff": self.match_value(data_string, "RankAdjDE"),
-            "def_eff_rank": self.match_rank(data_string, 'RankAdjDE'),
+            "def_eff_rank": self.match_rank(data_string, "RankAdjDE"),
             "tempo": self.match_value(data_string, "RankAdjTempo"),
             "off_efg": self.match_value(data_string, "RankeFG_Pct"),
             "off_efg_rank": self.match_rank(data_string, "RankeFG_Pct"),
@@ -124,43 +125,45 @@ class TeamDataScraper(KenpomScraper):
             "bench_minutes": self.find_value_in_html(data_string, "BenchRank"),
             "bench_minutes_rank": self.match_rank_in_html(data_string, "BenchRank"),
             "experience": self.find_value_in_html(data_string, "ExpRank"),
-            "experience_rank": self.match_rank_in_html(data_string, "ExpRank")
-      }
+            "experience_rank": self.match_rank_in_html(data_string, "ExpRank"),
+        }
 
     def match_value(self, data_string, match_string):
         whole_season_data_string = data_string.split("function tableStart()")[-1]
-        regex_str = f'={match_string}.*?seed'
+        regex_str = f"={match_string}.*?seed"
         try:
             matched_data = re.search(regex_str, whole_season_data_string)[0]
-            value = re.search('>(\d+\.*\d*)<', matched_data)[1]
+            value = re.search(">(\d+\.*\d*)<", matched_data)[1]
             return value
         except:
-            import pdb; pdb.set_trace()
+            import pdb
 
+            pdb.set_trace()
 
     def match_rank(self, data_string, match_string):
         whole_season_data_string = data_string.split("function tableStart()")[-1]
         regex_str = f'={match_string}.*?seed\\\\">\d*'
         matched_data = re.search(regex_str, whole_season_data_string)[0]
-        rank = re.search('seed\D*(\d+)', matched_data)[1]
+        rank = re.search("seed\D*(\d+)", matched_data)[1]
         return rank
 
     def match_rank_in_html(self, data_string, match_string):
         data_pos = data_string.index(match_string)
-        search_string = data_string[data_pos:data_pos + 50]
-        rank = re.search('seed\D*(\d+)', search_string)[1]
+        search_string = data_string[data_pos : data_pos + 50]
+        rank = re.search("seed\D*(\d+)", search_string)[1]
         return rank
 
     def find_value_in_html(self, data_string, match_string):
         data_pos = data_string.index(match_string)
-        search_string = data_string[data_pos:data_pos + 20]
-        value = re.search('((\+*)(-*)(\d*)\.(\d+))', search_string)[1]
+        search_string = data_string[data_pos : data_pos + 20]
+        value = re.search("((\+*)(-*)(\d*)\.(\d+))", search_string)[1]
         return value
 
     def write_data(self, data):
         base_path = Path(__file__).parent
         data_dir_path = base_path / "teams_data"
         self.write_to_file(data_dir_path, "teams_2021.json", data)
+
 
 if __name__ == "__main__":
     team_data_scraper = TeamDataScraper()
