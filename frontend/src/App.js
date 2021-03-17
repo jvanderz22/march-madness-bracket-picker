@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 
 import {
   BrowserRouter as Router,
@@ -8,6 +8,7 @@ import {
   NavLink,
   useParams,
   useHistory,
+  useLocation,
 } from 'react-router-dom'
 
 import logo from './logo.svg'
@@ -31,11 +32,8 @@ function App() {
             <Route exact path="/brackets">
               <BracketList />
             </Route>
-            <Route path="/brackets/:bracket_id">
-              <Bracket foo="foo" />
-            </Route>
-            <Route path="/brackets/:bracket_id/matchups/:matchup_id">
-              <Matchup />
+            <Route path="/brackets/:bracketId">
+              <Bracket />
             </Route>
           </Switch>
         </div>
@@ -49,7 +47,6 @@ function BracketCard(props) {
 
   const history = useHistory()
   const handleClick = (e) => {
-    console.log('here', e)
     history.push(`/brackets/${bracket.id}`)
   }
 
@@ -87,7 +84,7 @@ function BracketList() {
   }
 
   return (
-    <div className="bracket-list">
+    <div className="page-content bracket-list">
       <h2>Available Brackets</h2>
 
       {bracketsLoading && <div className="loading-container"></div>}
@@ -117,47 +114,192 @@ function BracketList() {
 }
 
 const Bracket = (props) => {
-  const params = useParams()
-  console.log('params', params)
+  const { bracketId } = useParams()
+
+  const [bracketInfo, setBracketInfo] = useState(null)
+  const [bracketLoading, setBracketLoading] = useState(true)
+  const [bracketRefreshing, setBracketRefreshing] = useState(false)
+  const [pickedInfoString, setPickedInfoString] = useState('')
+
+  const fetchBrackets = () => {
+    return fetch(`/brackets/${bracketId}`)
+      .then((resp) => resp.json())
+      .then((bracketInfo) => {
+        console.log('bracketInfo', bracketInfo)
+        setBracketInfo(bracketInfo)
+        setBracketLoading(false)
+      })
+  }
+
+  const location = useLocation()
+  const { search } = location
+  const history = useHistory()
+
+  const prevBracketInfoRef = useRef()
+  useEffect(() => {
+    prevBracketInfoRef.current = bracketInfo
+  })
+  const prevBracketInfo = prevBracketInfoRef.current
+
+  useEffect(() => {
+    fetchBrackets()
+  }, [bracketLoading])
+
+  useEffect(() => {
+    if (search.includes('refresh=true')) {
+      fetchBrackets()
+    }
+  })
+
+  useEffect(() => {
+    if (!bracketInfo) {
+      return
+    }
+    const {
+      available_matchups,
+      unavailable_matchups,
+      picked_matchups,
+    } = bracketInfo
+
+    const totalMatchups =
+      available_matchups.length +
+      unavailable_matchups.length +
+      picked_matchups.length
+    const pickedInfoString = `Picked ${picked_matchups.length} out of ${totalMatchups} games`
+    setPickedInfoString(pickedInfoString)
+  }, [bracketInfo])
+
+  if (bracketLoading) {
+    return <div className="loading-container"></div>
+  }
+
   return (
-    <div>
-      <h2>Bracket</h2>
-      <span>{props.foo}</span>
+    <div className="page">
+      <div className="bracket-info-bar">
+        <div className="bracket-name">{bracketInfo.name}</div>
+        <div>{pickedInfoString}</div>
+      </div>
+
+      <div className="page-content">
+        <Switch>
+          <Route exact path="/brackets/:bracketId/">
+            {(!prevBracketInfo ||
+              prevBracketInfo.picked_matchups.length !==
+                bracketInfo.picked_matchups.length) && (
+              <MatchupRedirect bracketInfo={bracketInfo} />
+            )}
+          </Route>
+          <Route path="/brackets/:bracketId/finished-bracket">
+            <FinishedBracket bracketInfo={bracketInfo} />
+          </Route>
+          <Route path="/brackets/:bracketId/matchups/:matchupId">
+            <Matchup />
+          </Route>
+        </Switch>
+      </div>
     </div>
   )
 }
 
-const Matchup = () => {
-  const params = useParams()
-  console.log('params', params)
-  return <div>Matchup</div>
+const MatchupRedirect = (props) => {
+  const { bracketInfo } = props
+  const history = useHistory()
+  useEffect(() => {
+    if (!bracketInfo) {
+      return
+    }
+    const { id, available_matchups } = bracketInfo
+
+    if (available_matchups.length) {
+      const nextMatchupIdx = Math.floor(
+        Math.random() * available_matchups.length
+      )
+      const nextMatchup = available_matchups[nextMatchupIdx]
+      history.push(`/brackets/${id}/matchups/${nextMatchup.id}`)
+    } else {
+      history.push(`/brackets/${id}/finished-bracket`)
+    }
+  })
+  return <div></div>
 }
 
-/*
-function App() {
-  const [getMessage, setGetMessage] = useState({})
+const Matchup = () => {
+  const { bracketId, matchupId } = useParams()
 
-  useEffect(async ()=>{
-    console.log('here!!!')
-    // fetch('/brackets', { method: 'POST', body: JSON.stringify({ name: 'testbraacket' }), headers: { 'Content-Type': 'application/json' }})
-    const response = await fetch('/brackets')
-    console.log('response', response)
-    const body = await response.json()
-    console.log('body', body)
-    const individualBracketResponse = await fetch(`/brackets/${body[0].id}`)
-    const individualBracket = await individualBracketResponse.json()
-    console.log('individualBracket', individualBracket)
-    const bracketMatchup = individualBracket.available_matchups[0]
-    const matchupResponse = await fetch(`/bracket-matchups/${bracketMatchup.id}`)
-    const matchup = await matchupResponse.json()
-    console.log('matchup', matchup)
-    const updatedMatchupResponse = await fetch(`/bracket-matchups/${bracketMatchup.id}`, { method: 'PATCH', body: JSON.stringify({ winner_id: matchup.team1_id, notes: "fooo", confidence: 2 }), headers: { 'Content-Type': 'application/json' }})
-    const updatedMatchup = await updatedMatchupResponse.json()
-    console.log('updatedMatchup', updatedMatchup)
+  const [matchup1Left, setMatchup1Left] = useState(true)
+  const [matchupInfo, setMatchupInfo] = useState(null)
+  const [matchupLoading, setMatchupLoading] = useState(true)
+  const [pickedInfoString, setPickedInfoString] = useState('')
 
+  useEffect(() => {
+    fetch(`/bracket-matchups/${matchupId}`)
+      .then((resp) => resp.json())
+      .then((matchupInfo) => {
+        setMatchupInfo(matchupInfo)
+        setMatchupLoading(false)
+      })
+  }, [matchupLoading])
 
+  useEffect(() => {
+    const shouldSetMatchupLeft = Math.floor(Math.random() * 2) == 0
+    setMatchup1Left(shouldSetMatchupLeft)
+  }, [true])
 
+  const history = useHistory()
+  const handleTeamSelect = (teamInfo) => {
+    fetch(`/bracket-matchups/${matchupId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        winner_id: teamInfo.id,
+        notes: 'fooo',
+        confidence: 2,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    }).then(() => {
+      history.push(`/brackets/${bracketId}?refresh=true`)
+    })
+  }
 
-   */
+  if (!matchupInfo) {
+    return null
+  }
+
+  const { team1, team2 } = matchupInfo
+  const team1Info = (
+    <TeamInfo teamInfo={team1} num="team1" onTeamSelect={handleTeamSelect} />
+  )
+  const team2Info = (
+    <TeamInfo teamInfo={team2} num="team2" onTeamSelect={handleTeamSelect} />
+  )
+
+  return (
+    <div className="page-content matchup-container">
+      {matchup1Left && team1Info}
+      {!matchup1Left && team2Info}
+      {!matchup1Left && team1Info}
+      {matchup1Left && team2Info}
+    </div>
+  )
+}
+
+const TeamInfo = (props) => {
+  const { teamInfo, num } = props
+  const handleTeamSelect = (e) => {
+    props.onTeamSelect(teamInfo)
+  }
+
+  return (
+    <div className="team-info">
+      <div>Team Info</div>
+      <div>{num}</div>
+      <div>{teamInfo.name}</div>
+      <button onClick={handleTeamSelect}>Select Team</button>
+    </div>
+  )
+}
+
+const FinishedBracket = () => {
+  return <div>FinishedBracket</div>
+}
 
 export default App

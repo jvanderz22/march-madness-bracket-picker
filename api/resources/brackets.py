@@ -40,10 +40,10 @@ def bracket_response_json(bracket_id):
         )
 
         return {
-            "bracket": bracket.to_dict(),
+            **bracket.to_dict(),
             "picked_matchups": [matchup.to_dict() for matchup in picked_matchups],
             "available_matchups": [matchup.to_dict() for matchup in available_matchups],
-            "unavailable_matches": [
+            "unavailable_matchups": [
                 matchup.to_dict() for matchup in unavailable_matchups
             ],
         }

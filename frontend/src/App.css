@@ -29,7 +29,11 @@ header {
 [role='main'] {
   grid-row: 3;
   grid-column: 2;
+}
+
+.page-content {
   padding: 0 30px;
+  margin-top: 5px;
 }
 
 a.menu-link {
@@ -59,4 +63,23 @@ a.menu-link {
 
 .bracket-card:hover {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
+}
+
+.bracket-info-bar {
+  display: grid;
+  border-bottom: 1px solid gray;
+  padding: 0 30px;
+  grid-template-columns: auto 200px;
+  align-items: center;
+}
+
+.bracket-name {
+  padding: 10px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.matchup-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
