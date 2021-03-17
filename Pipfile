@@ -11,6 +11,7 @@ python-dotenv = "*"
 alembic = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
+flask-restful = "*"
 
 [dev-packages]
 

@@ -15,3 +15,10 @@ class Tournament(Base):
     )
     year = sa.Column(sa.Integer, nullable=False)
     tournament_name = sa.Column(sa.String(100), nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "year": self.year,
+            "tournament_name": self.tournament_name,
+        }

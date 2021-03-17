@@ -4,8 +4,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from .base import Base
 
 
-class Tournament(Base):
-    __tablename__ = "tournaments"
+class User(Base):
+    __tablename__ = "users"
 
     id = sa.Column(
         UUID(),
@@ -13,5 +13,7 @@ class Tournament(Base):
         primary_key=True,
         server_default=sa.text("uuid_generate_v4()"),
     )
-    year = sa.Column(sa.Integer, nullable=False)
-    tournament_name = sa.Column(sa.String(100), nullable=False)
+    email = sa.Column(sa.String(50), nullable=False)
+
+    def to_dict(self):
+        return {"id": self.id, "email": self.email}
