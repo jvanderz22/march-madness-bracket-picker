@@ -1,38 +1,62 @@
-.App {
-  text-align: center;
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 45px 1fr;
+  grid-template-columns: auto 1fr;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+header {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
+  /* stretch from first grid line to last grid line */
+  grid-column: 1/-1;
+  background-color: black;
   color: white;
+  -ms-grid-column-span: 2;
+  grid-row: 2;
+
+  display: grid;
+  align-items: center;
+  padding: 0 30px;
 }
 
-.App-link {
-  color: #61dafb;
+[role='main'] {
+  grid-row: 3;
+  grid-column: 2;
+  padding: 0 30px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+a.menu-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.loading-container {
+  min-height: 200px;
+}
+
+.bracket-list-container {
+  margin: 10px 0;
+  display: grid;
+  grid-auto-rows: 150px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 1em;
+}
+
+.bracket-card {
+  padding: 20px 5px;
+  border: 1px solid gray;
+  width: 150px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.bracket-card:hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
 }
