@@ -83,3 +83,36 @@ a.menu-link {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
+
+.matchup-card-container {
+  margin: 10px;
+}
+
+.round-info {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.matchup-card {
+  width: 500px;
+  padding: 10px;
+  border: 1px solid gray;
+}
+
+.matchup-card-team-info:not(:first-child) {
+  margin-top: 5px;
+}
+
+.matchup-card-team-info {
+  display: grid;
+  grid-template-columns: 30px minmax(200px, 1fr) minmax(100px, 1fr) minmax(
+      100px,
+      1fr
+    );
+  padding: 3px;
+}
+
+.matchup-card-team-info.winner {
+  border: 1px solid green;
+  border-radius: 5px;
+}

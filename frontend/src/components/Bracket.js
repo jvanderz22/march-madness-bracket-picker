@@ -113,7 +113,7 @@ const MatchupRedirect = (props) => {
 const Matchup = (props) => {
   const { matchupId } = useParams()
 
-  const [matchup1Left, setMatchup1Left] = useState(true)
+  const [team1Left, setTeam1Left] = useState(true)
   const [matchupInfo, setMatchupInfo] = useState(null)
   const [matchupLoading, setMatchupLoading] = useState(true)
 
@@ -132,7 +132,7 @@ const Matchup = (props) => {
 
   useEffect(() => {
     const shouldSetMatchupLeft = Math.floor(Math.random() * 2) === 0
-    setMatchup1Left(shouldSetMatchupLeft)
+    setTeam1Left(shouldSetMatchupLeft)
   }, [matchupId])
 
   if (!matchupInfo) {
@@ -149,10 +149,10 @@ const Matchup = (props) => {
 
   return (
     <div className="page-content matchup-container">
-      {matchup1Left && team1Info}
-      {!matchup1Left && team2Info}
-      {!matchup1Left && team1Info}
-      {matchup1Left && team2Info}
+      {team1Left && team1Info}
+      {!team1Left && team2Info}
+      {!team1Left && team1Info}
+      {team1Left && team2Info}
     </div>
   )
 }
@@ -174,8 +174,104 @@ const TeamInfo = (props) => {
   )
 }
 
-const FinishedBracket = () => {
-  return <div>FinishedBracket</div>
+const FinishedBracket = (props) => {
+  const { bracketInfo } = props
+  const { picked_matchups } = bracketInfo
+  const matchups = picked_matchups.sort((a, b) => {
+    if (a.round_number !== b.round_number) {
+      if (a.round_number > b.round_number) {
+        return 1
+      } else {
+        return -1
+      }
+    }
+    if (a.game_number > b.game_number) {
+      return 1
+    }
+    return -1
+  })
+  return (
+    <div>
+      {matchups.map((matchup, idx) => {
+        const prevMatchup = matchups[idx - 1]
+        let roundInfo = null
+        if (!prevMatchup || matchup.round_number !== prevMatchup.round_number) {
+          roundInfo = (
+            <div className="round-info">Round {matchup.round_number}</div>
+          )
+        }
+
+        return (
+          <div key={matchup.id}>
+            {roundInfo}
+            <div className="matchup-card-container">
+              <MatchupCard matchupId={matchup.id} />
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+const MatchupCard = (props) => {
+  const { matchupId } = props
+
+  const [matchupInfo, setMatchupInfo] = useState(null)
+  const [matchupLoading, setMatchupLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`/bracket-matchups/${matchupId}`)
+      .then((resp) => resp.json())
+      .then((matchupInfo) => {
+        setMatchupInfo(matchupInfo)
+        setMatchupLoading(false)
+      })
+  }, [matchupId, matchupLoading])
+
+  if (matchupLoading) {
+    return null
+  }
+
+  const { team1, team2, winner_id } = matchupInfo
+  return (
+    <div className="matchup-card">
+      <div
+        className={`matchup-card-team-info ${
+          winner_id === team1.id ? 'winner' : ''
+        }`}
+      >
+        <div>{team1.seed}</div>
+        <div>{team1.name}</div>
+        <div>
+          {team1.stats.off_eff}({team1.stats.off_eff_rank})
+        </div>
+        <div>
+          {team1.stats.def_eff}({team1.stats.def_eff_rank})
+        </div>
+      </div>
+      <div
+        className={`matchup-card-team-info ${
+          winner_id === team2.id ? 'winner' : ''
+        }`}
+      >
+        <div>{team2.seed}</div>
+        <div>{team2.name}</div>
+        <div>
+          {team2.stats.off_eff}({team2.stats.off_eff_rank})
+        </div>
+        <div>
+          {team2.stats.def_eff}({team2.stats.def_eff_rank})
+        </div>
+      </div>
+      {matchupInfo.confidence && (
+        <div className="matchup-card-confidence">{matchupInfo.confidence}</div>
+      )}
+      {matchupInfo.notes && (
+        <div className="matchup-card-notes">{matchupInfo.notes}</div>
+      )}
+    </div>
+  )
 }
 
 export default Bracket
