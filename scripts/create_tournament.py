@@ -54,7 +54,7 @@ def create_games(session, tournament, bracket_info):
                 .first()
             )
             if game is None:
-                region = get_region(round_number, game_number, TOTAL_ROUNDS)
+                region = get_region(round_number, game_number)
                 game = Game(
                     round_number=round_number,
                     game_number=game_number,
