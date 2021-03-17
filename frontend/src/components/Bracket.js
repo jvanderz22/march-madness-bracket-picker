@@ -194,20 +194,22 @@ const Matchup = (props) => {
           {!team1Left && team1Info}
           {team1Left && team2Info}
         </div>
-        <div className="matchup-select-form-item">
-          <label>Matchup Confidence:</label>
-          <ConfidencePicker
-            onConfidenceChange={handleConfidenceChange}
-            confidence={matchupConfidence}
-          />
-        </div>
-        <div className="matchup-select-form-item">
-          <label>Notes:</label>
-          <textarea
-            className="matchup-notes"
-            value={matchupNotes}
-            onChange={handleNotesChange}
-          />
+        <div className="matchup-select-form-item  matchup-meta-info-container">
+          <div className="matchup-meta-info-item">
+            <label>Matchup Confidence:</label>
+            <ConfidencePicker
+              onConfidenceChange={handleConfidenceChange}
+              confidence={matchupConfidence}
+            />
+          </div>
+          <div className="matchup-meta-info-item">
+            <label>Notes:</label>
+            <textarea
+              className="matchup-notes"
+              value={matchupNotes}
+              onChange={handleNotesChange}
+            />
+          </div>
         </div>
         <div className="matchup-select-form-item">
           <input
@@ -384,7 +386,7 @@ const STAT_RANK_MAP = {
 const teamInfoLayout = [
   {
     sectionLabel: 'Effeciency',
-    stats: ['off_eff', 'tempo'],
+    stats: ['off_eff', 'sos', 'tempo'],
   },
   {
     sectionLabel: 'Four Factors',
@@ -408,11 +410,45 @@ const teamInfoLayout = [
     sectionLabel: 'Points Distribution',
     stats: ['off_3_point_dist', 'off_2_point_dist', 'off_ft_point_dist'],
   },
-  {
-    sectionLabel: 'Strength of Schedule',
-    stats: ['sos'],
-  },
 ]
+
+const dechex = (d) => {
+  return d.toString(16)
+}
+
+const addZeroToHex = (d, h) => {
+  let hexVal = h
+  if (d < 16) {
+    hexVal = `0${hexVal}`
+  }
+  return hexVal.substr(0, 2)
+}
+
+const getBackgroundColor = (rank) => {
+  const totalTeams = 351
+  let decimalColor = (rank - 1) / (totalTeams - 1)
+  let red
+  let blue
+  let green
+  if (decimalColor <= 0.5) {
+    const fraction = Math.pow(1 - (0.5 - decimalColor) / 0.5, 0.2)
+    red = 94.9 * fraction
+    green = (1 - fraction) * 1.96 + 98.04
+    blue = 99.22 * fraction
+  } else {
+    const fraction = Math.pow(1 + (0.5 - decimalColor) / 0.5, 0.2)
+    red = (1 - fraction) * 5.1 + 94.9
+    green = 94.84 * fraction
+    blue = 99.22 * fraction
+  }
+  red = 2.55 * red
+  green = 2.55 * green
+  blue = 2.55 * blue
+  const hexRed = addZeroToHex(red, dechex(red))
+  const hexGreen = addZeroToHex(green, dechex(green))
+  const hexBlue = addZeroToHex(blue, dechex(blue))
+  return `#${hexRed}${hexGreen}${hexBlue}`
+}
 
 const TeamInfo = (props) => {
   const { teamInfo, positionNumber, isSelected } = props
@@ -422,7 +458,10 @@ const TeamInfo = (props) => {
   }
 
   return (
-    <div className="team-info-container" onClick={handleTeamSelect}>
+    <div
+      className={`team-info-container ${isSelected ? 'selected' : null}`}
+      onClick={handleTeamSelect}
+    >
       <div className="team-info-card-label">{positionNumber} Info</div>
       {teamInfoLayout.map((layoutObj) => {
         return (
@@ -441,15 +480,26 @@ const TeamInfo = (props) => {
                 const defStatRankStat = STAT_RANK_MAP[defStat]
                 const defStatRank =
                   defStatRankStat && teamInfo.stats[defStatRankStat]
+
+                const offStatColor =
+                  offStatRank && getBackgroundColor(offStatRank)
+                const defStatColor =
+                  defStatRank && getBackgroundColor(defStatRank)
                 return (
                   <div key={stat} className="stat-row">
                     <div>{statLabel}</div>
-                    <div className="layout-stat-value">
+                    <div
+                      className="layout-stat-value"
+                      style={{ backgroundColor: offStatColor }}
+                    >
                       {offStatValue}{' '}
                       {offStatRank && <span>({offStatRank})</span>}
                     </div>
                     {defStat && (
-                      <div className="layout-stat-value">
+                      <div
+                        className="layout-stat-value"
+                        style={{ backgroundColor: defStatColor }}
+                      >
                         {defStatValue}{' '}
                         {defStatRank && <span>({defStatRank})</span>}
                       </div>
@@ -461,13 +511,6 @@ const TeamInfo = (props) => {
           </div>
         )
       })}
-
-      <input
-        type="radio"
-        value={teamInfo.id}
-        onChange={handleTeamSelect}
-        checked={isSelected}
-      />
     </div>
   )
 }

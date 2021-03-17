@@ -91,10 +91,15 @@ a.menu-link {
   border-radius: 3px;
   grid-template-columns: 1fr;
   padding: 5px;
+  cursor: pointer;
 }
 
 .team-info-container:hover {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
+}
+
+.team-info-container.selected {
+  border: 3px solid green;
 }
 
 .matchup-select-form {
@@ -113,9 +118,19 @@ a.menu-link {
   grid-gap: 20px;
 }
 
+.matchup-meta-info-container {
+  grid-template-columns: 1fr 1fr;
+}
+
+.matchup-meta-info-item {
+  display: grid;
+  align-items: start;
+  justify-content: center;
+}
+
 .matchup-notes {
   width: 350px;
-  height: 70px;
+  height: 50px;
 }
 
 .matchup-card-container {
@@ -156,19 +171,19 @@ a.menu-link {
 }
 
 .layout-section {
-  padding: 4px;
+  padding: 3px;
 }
 
 .team-info-card-label {
   text-align: center;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .layout-section-label {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  padding: 3px 0;
+  padding: 2px 0;
 }
 
 .layout-stats {
@@ -177,7 +192,7 @@ a.menu-link {
 
 .layout-stat-value {
   max-width: 150px;
-  padding: 3px;
+  padding: 2px;
 }
 
 .stat-row {
