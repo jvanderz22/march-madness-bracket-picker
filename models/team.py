@@ -14,3 +14,6 @@ class Team(Base):
         server_default=sa.text("uuid_generate_v4()"),
     )
     name = sa.Column(sa.String(100), nullable=False)
+
+    def to_dict(self):
+        return {"id": self.id, "name": self.name}

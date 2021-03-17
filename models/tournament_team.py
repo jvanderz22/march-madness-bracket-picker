@@ -22,3 +22,13 @@ class TournamentTeam(Base):
 
     tournament = relationship("Tournament", foreign_keys=[tournament_id])
     team = relationship("Team", foreign_keys=[team_id])
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "team_id": self.team_id,
+            "tournament_id": self.tournament_id,
+            "seed": self.seed,
+            "region": self.region,
+            "stats": self.stats,
+        }
