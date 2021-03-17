@@ -79,9 +79,43 @@ a.menu-link {
   font-weight: 600;
 }
 
-.matchup-container {
+.team-matchup-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: 1fr 1fr;
+}
+
+.team-info-container {
+  display: grid;
+  justify-content: center;
+  border: 1px solid gray;
+  border-radius: 3px;
+  grid-template-columns: 1fr;
+  padding: 5px;
+}
+
+.team-info-container:hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
+}
+
+.matchup-select-form {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.matchup-select-form label {
+  text-align: center;
+  padding-bottom: 3px;
+}
+
+.matchup-select-form-item {
+  display: grid;
+  justify-content: center;
+  grid-gap: 20px;
+}
+
+.matchup-notes {
+  width: 350px;
+  height: 70px;
 }
 
 .matchup-card-container {
@@ -115,4 +149,48 @@ a.menu-link {
 .matchup-card-team-info.winner {
   border: 1px solid green;
   border-radius: 5px;
+}
+
+.matchup-card-info {
+  margin: 4px 0;
+}
+
+.layout-section {
+  padding: 4px;
+}
+
+.team-info-card-label {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.layout-section-label {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 3px 0;
+}
+
+.layout-stats {
+  font-size: 14px;
+}
+
+.layout-stat-value {
+  max-width: 150px;
+  padding: 3px;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.confidence-picker-container input[type='radio'] {
+  margin-right: 5px;
+  margin-left: 10px;
+}
+
+.btn {
+  height: 40px;
+  min-width: 80px;
 }

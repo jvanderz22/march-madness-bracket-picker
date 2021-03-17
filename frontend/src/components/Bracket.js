@@ -11,6 +11,9 @@ const Bracket = (props) => {
   let history = useHistory()
 
   const handleMatchupTeamSelect = (matchupId, winnerId, notes, confidence) => {
+    if (!winnerId) {
+      return
+    }
     fetch(`/bracket-matchups/${matchupId}`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -107,7 +110,7 @@ const MatchupRedirect = (props) => {
       history.push(`/brackets/${id}/finished-bracket`)
     }
   })
-  return <div></div>
+  return null
 }
 
 const Matchup = (props) => {
@@ -115,10 +118,35 @@ const Matchup = (props) => {
 
   const [team1Left, setTeam1Left] = useState(true)
   const [matchupInfo, setMatchupInfo] = useState(null)
+  const [selectedTeamId, setSelectedTeamId] = useState('')
   const [matchupLoading, setMatchupLoading] = useState(true)
+  const [matchupConfidence, setMatchupConfidence] = useState(null)
+  const [matchupNotes, setMatchupNotes] = useState('')
 
-  const handleTeamSelect = (teamInfo) => {
-    props.onMatchupTeamSelect(matchupId, teamInfo.id)
+  const handleTeamSelect = (teamId) => {
+    setSelectedTeamId(teamId)
+  }
+
+  const handleConfidenceChange = (confidence) => {
+    setMatchupConfidence(confidence)
+  }
+
+  const handleNotesChange = (e) => {
+    const { value } = e.currentTarget
+    setMatchupNotes(value)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!selectedTeamId) {
+      return
+    }
+    props.onMatchupTeamSelect(
+      matchupId,
+      selectedTeamId,
+      matchupNotes,
+      matchupConfidence
+    )
   }
 
   useEffect(() => {
@@ -141,35 +169,305 @@ const Matchup = (props) => {
 
   const { team1, team2 } = matchupInfo
   const team1Info = (
-    <TeamInfo teamInfo={team1} num="team1" onTeamSelect={handleTeamSelect} />
+    <TeamInfo
+      teamInfo={team1}
+      positionNumber={team1Left ? 'Team1' : 'Team2'}
+      isSelected={selectedTeamId === team1.id}
+      onTeamSelect={handleTeamSelect}
+    />
   )
   const team2Info = (
-    <TeamInfo teamInfo={team2} num="team2" onTeamSelect={handleTeamSelect} />
+    <TeamInfo
+      teamInfo={team2}
+      positionNumber={team1Left ? 'Team2' : 'Team1'}
+      onTeamSelect={handleTeamSelect}
+      isSelected={selectedTeamId === team2.id}
+    />
   )
 
   return (
-    <div className="page-content matchup-container">
-      {team1Left && team1Info}
-      {!team1Left && team2Info}
-      {!team1Left && team1Info}
-      {team1Left && team2Info}
+    <div className="page-content">
+      <form className="matchup-select-form" onSubmit={handleSubmit}>
+        <div className="matchup-select-form-item team-matchup-container">
+          {team1Left && team1Info}
+          {!team1Left && team2Info}
+          {!team1Left && team1Info}
+          {team1Left && team2Info}
+        </div>
+        <div className="matchup-select-form-item">
+          <label>Matchup Confidence:</label>
+          <ConfidencePicker
+            onConfidenceChange={handleConfidenceChange}
+            confidence={matchupConfidence}
+          />
+        </div>
+        <div className="matchup-select-form-item">
+          <label>Notes:</label>
+          <textarea
+            className="matchup-notes"
+            value={matchupNotes}
+            onChange={handleNotesChange}
+          />
+        </div>
+        <div className="matchup-select-form-item">
+          <input
+            className="btn"
+            type="submit"
+            value="Submit"
+            disabled={!selectedTeamId}
+          />
+        </div>
+      </form>
     </div>
   )
 }
 
-const TeamInfo = (props) => {
-  const { teamInfo, num } = props
-  const handleTeamSelect = (e) => {
-    props.onTeamSelect(teamInfo)
+const ConfidencePicker = (props) => {
+  const { confidence } = props
+
+  const handleConfidenceSelect = (e) => {
+    const { value } = e.currentTarget
+    props.onConfidenceChange(Number(value))
   }
 
   return (
-    <div className="team-info">
-      <div>Team Info</div>
-      <div>{num}</div>
-      <div>{teamInfo.name}</div>
-      <div>{teamInfo.seed}</div>
-      <button onClick={handleTeamSelect}>Select Team</button>
+    <div className="confidence-picker-container">
+      <input
+        type="radio"
+        value={1}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 1}
+      />
+      1
+      <input
+        type="radio"
+        value={2}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 2}
+      />
+      2
+      <input
+        type="radio"
+        value={3}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 3}
+      />
+      3
+      <input
+        type="radio"
+        value={4}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 4}
+      />
+      4
+      <input
+        type="radio"
+        value={5}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 5}
+      />
+      5
+      <input
+        type="radio"
+        value={6}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 6}
+      />
+      6
+      <input
+        type="radio"
+        value={7}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 7}
+      />
+      7
+      <input
+        type="radio"
+        value={8}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 8}
+      />
+      8
+      <input
+        type="radio"
+        value={9}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 9}
+      />
+      9
+      <input
+        type="radio"
+        value={10}
+        onChange={handleConfidenceSelect}
+        checked={confidence === 10}
+      />
+      10
+    </div>
+  )
+}
+
+const STAT_LABEL_MAP = {
+  off_2_point_dist: '2-Pointers',
+  off_3_point_dist: '3-Pointers',
+  off_3pa_per_fga: '3PA/FGA',
+  off_assist_rate: 'A/FGM',
+  off_block_pct: 'Block%',
+  off_eff: 'Adj. Eff',
+  off_efg: 'EFG%',
+  off_ft_pct: 'FT%',
+  off_ft_point_dist: 'Free Throws',
+  off_fta_rate: 'FTA/FGA',
+  off_reb: 'Off Reb%',
+  off_steal_pct: 'Steal%',
+  off_three_point_pct: '3P%',
+  off_turnover: 'Turnover%',
+  off_two_point_pct: '2P%',
+  sos: 'SOS',
+  tempo: 'Tempo',
+}
+
+const OFF_DEF_MAP = {
+  off_2_point_dist: 'def_2_point_dist',
+  off_3_point_dist: 'def_3_point_dist',
+  off_3pa_per_fga: 'def_3pa_per_fga',
+  off_assist_rate: 'def_assist_rate',
+  off_block_pct: 'def_block_pct',
+  off_eff: 'def_eff',
+  off_efg: 'def_efg',
+  off_ft_pct: 'def_ft_pct',
+  off_ft_point_dist: 'def_ft_point_dist',
+  off_fta_rate: 'def_fta_rate',
+  off_reb: 'def_reb',
+  off_steal_pct: 'def_steal_pct',
+  off_three_point_pct: 'def_three_point_pct',
+  off_turnover: 'def_turnover',
+  off_two_point_pct: 'def_two_point_pct',
+}
+
+const STAT_RANK_MAP = {
+  bench_minutes: 'bench_minutes_rank',
+  def_2_point_dist: 'def_2_point_dist_rank',
+  def_3_point_dist: 'def_3_point_dist_rank',
+  def_3pa_per_fga: 'def_3pa_per_fga_rank',
+  def_assist_rate: 'def_assist_rate_rank',
+  def_block_pct: 'def_block_pct_rank',
+  def_eff: 'def_eff_rank',
+  def_efg: 'def_efg_rank',
+  def_ft_pct: 'def_ft_pct_rank',
+  def_ft_point_dist: 'def_ft_point_dist_rank',
+  def_fta_rate: 'def_fta_rate_rank',
+  def_reb: 'def_reb_rank',
+  def_steal_pct: 'def_steal_pct_rank',
+  def_three_point_pct: 'def_three_point_pct_rank',
+  def_turnover: 'def_turnover_rank',
+  def_two_point_pct: 'def_two_point_pct_rank',
+  experience: 'experience_rank',
+  off_2_point_dist: 'off_2_point_dist_rank',
+  off_3_point_dist: 'off_3_point_dist_rank',
+  off_3pa_per_fga: 'off_3pa_per_fga_rank',
+  off_assist_rate: 'off_assist_rate_rank',
+  off_block_pct: 'off_block_pct_rank',
+  off_eff: 'off_eff_rank',
+  off_efg: 'off_efg_rank',
+  off_ft_pct: 'off_ft_pct_rank',
+  off_ft_point_dist: 'off_ft_point_dist_rank',
+  off_fta_rate: 'off_fta_rate_rank',
+  off_reb: 'off_reb_rank',
+  off_steal_pct: 'off_steal_pct_rank',
+  off_three_point_pct: 'off_three_point_pct_rank',
+  off_turnover: 'off_turnover_rank',
+  off_two_point_pct: 'off_two_point_pct_rank',
+  sos: 'sos_rank',
+  tempo: null,
+}
+
+const teamInfoLayout = [
+  {
+    sectionLabel: 'Effeciency',
+    stats: ['off_eff', 'tempo'],
+  },
+  {
+    sectionLabel: 'Four Factors',
+    stats: ['off_efg', 'off_turnover', 'off_reb', 'off_fta_rate'],
+  },
+  {
+    sectionLabel: 'Miscellaneous Components',
+    stats: [
+      'off_three_point_pct',
+      'off_two_point_pct',
+      'off_ft_pct',
+      'off_block_pct',
+      'off_steal_pct',
+    ],
+  },
+  {
+    sectionLabel: 'Style Components',
+    stats: ['off_3pa_per_fga', 'off_assist_rate'],
+  },
+  {
+    sectionLabel: 'Points Distribution',
+    stats: ['off_3_point_dist', 'off_2_point_dist', 'off_ft_point_dist'],
+  },
+  {
+    sectionLabel: 'Strength of Schedule',
+    stats: ['sos'],
+  },
+]
+
+const TeamInfo = (props) => {
+  const { teamInfo, positionNumber, isSelected } = props
+
+  const handleTeamSelect = (e) => {
+    props.onTeamSelect(teamInfo.id)
+  }
+
+  return (
+    <div className="team-info-container" onClick={handleTeamSelect}>
+      <div className="team-info-card-label">{positionNumber} Info</div>
+      {teamInfoLayout.map((layoutObj) => {
+        return (
+          <div className="layout-section" key={layoutObj.sectionLabel}>
+            <div className="layout-section-label">{layoutObj.sectionLabel}</div>
+            <div className="layout-stats">
+              {layoutObj.stats.map((stat) => {
+                const statLabel = STAT_LABEL_MAP[stat]
+                const offStatValue = teamInfo.stats[stat]
+                const offStatRankStat = STAT_RANK_MAP[stat]
+                const offStatRank =
+                  offStatRankStat && teamInfo.stats[offStatRankStat]
+
+                const defStat = OFF_DEF_MAP[stat]
+                const defStatValue = defStat && teamInfo.stats[defStat]
+                const defStatRankStat = STAT_RANK_MAP[defStat]
+                const defStatRank =
+                  defStatRankStat && teamInfo.stats[defStatRankStat]
+                return (
+                  <div key={stat} className="stat-row">
+                    <div>{statLabel}</div>
+                    <div className="layout-stat-value">
+                      {offStatValue}{' '}
+                      {offStatRank && <span>({offStatRank})</span>}
+                    </div>
+                    {defStat && (
+                      <div className="layout-stat-value">
+                        {defStatValue}{' '}
+                        {defStatRank && <span>({defStatRank})</span>}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })}
+
+      <input
+        type="radio"
+        value={teamInfo.id}
+        onChange={handleTeamSelect}
+        checked={isSelected}
+      />
     </div>
   )
 }
@@ -265,10 +563,14 @@ const MatchupCard = (props) => {
         </div>
       </div>
       {matchupInfo.confidence && (
-        <div className="matchup-card-confidence">{matchupInfo.confidence}</div>
+        <div className="matchup-card-info matchup-card-confidence">
+          Confidence: {matchupInfo.confidence}
+        </div>
       )}
       {matchupInfo.notes && (
-        <div className="matchup-card-notes">{matchupInfo.notes}</div>
+        <div className="matchup-card-info matchup-card-notes">
+          Notes: {matchupInfo.notes}
+        </div>
       )}
     </div>
   )
