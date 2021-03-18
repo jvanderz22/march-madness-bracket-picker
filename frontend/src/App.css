@@ -195,6 +195,12 @@ a.menu-link {
   padding: 2px;
 }
 
+.layout-stat-label {
+  max-width: 150px;
+  padding: 2px;
+  font-weight: 600;
+}
+
 .stat-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

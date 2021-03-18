@@ -463,6 +463,16 @@ const TeamInfo = (props) => {
       onClick={handleTeamSelect}
     >
       <div className="team-info-card-label">{positionNumber} Info</div>
+      <div className="layout-section">
+        <div className="layout-stats">
+          <div className="stat-row">
+            <div></div>
+            <div className="layout-stat-label">Offense</div>
+            <div className="layout-stat-label">Defense</div>
+          </div>
+        </div>
+      </div>
+
       {teamInfoLayout.map((layoutObj) => {
         return (
           <div className="layout-section" key={layoutObj.sectionLabel}>
