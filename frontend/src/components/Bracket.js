@@ -385,7 +385,7 @@ const STAT_RANK_MAP = {
 
 const teamInfoLayout = [
   {
-    sectionLabel: 'Effeciency',
+    sectionLabel: 'Efficiency',
     stats: ['off_eff', 'sos', 'tempo'],
   },
   {
